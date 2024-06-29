@@ -107,12 +107,12 @@ hr {
   margin-left: auto;
 }
 
+.checkbox-inputs {
+  margin-top: 1.5em;
+}
+
 @media (min-width: 480px) {
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-  }
+  
   
   .passwrds {
     flex-direction: row;
@@ -125,5 +125,13 @@ hr {
 
   hr {
     width: 36em;
+  }
+}
+
+@media (min-width: 786px) {
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
   }
 }

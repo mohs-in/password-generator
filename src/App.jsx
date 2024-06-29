@@ -1,47 +1,66 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import './App.css'
 import copy from '/copy.png'
 
 function App() {
-  const characters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9","~","`","!","@","#","$","%","^","&","*","(",")","_","-","+","=","{","[","}","]",",","|",":",";","<",">",".","?","/"];
-  const alphaNum = characters.slice(0,62);
+  const characters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9","!","@","#","$","&","*","_","-",",",".","?"];
+  
+  const alphabets = characters.slice(0,52)
+  const numbers = characters.slice(52,62)
+  const specialChars = characters.slice(62)
+
+  const [includeNum, setIncludeNum] = useState(false)
+  const [includeSpecial, setIncludeSpecial] = useState(false)
 
   const [passOne, setPassOne] = useState({password:'Special characters'});
   const [passTwo, setPassTwo] = useState({password:'Alpha Numeric'});
   const [isClickedOne, setIsClickedOne] = useState(false)
   const [isClickedTwo, setIsClickedTwo] = useState(false)
 
+  let str = alphabets
+
+  useEffect(() => {
+    if(includeNum && includeSpecial)
+      str = alphabets.concat(numbers).concat(specialChars)
+    else if(includeSpecial)
+      str = alphabets.concat(specialChars)
+    else if(includeNum)
+      str = alphabets.concat(numbers)
+  },[includeNum, includeSpecial, passOne, passTwo])
+
   function PassOneIdx() {
-    let idx = Math.floor(Math.random()*characters.length)
+    let idx = Math.floor(Math.random()*str.length)
     return idx;
   }
 
   function PassTwoIdx() {
-    let idx = Math.floor(Math.random()*alphaNum.length)
+    let idx = Math.floor(Math.random()*str.length)
     return idx;
   }
 
-  let pwdOne = ''
-  let pwdTwo = ''
+  let passwordOne = ''
+  let passwordTwo = ''
   
-  const execfunc = ()=> {
+  const generatePasswords = ()=> {
     setIsClickedOne(false)
     setIsClickedTwo(false)
     navigator.clipboard.writeText('')
+    
+    
     for(let i=0;i<15;i++) {
-      pwdOne += characters[PassOneIdx()];
+      passwordOne += str[PassOneIdx()];
     }
     for(let i=0;i<15;i++) {
-      pwdTwo += alphaNum[PassTwoIdx()];
+      passwordTwo += str[PassTwoIdx()];
     }
     setPassOne((m) => {
       let objt = {...m};
-      objt.password = pwdOne;
+      objt.password = passwordOne;
       return objt;
     });
     setPassTwo((m) => {
       let objt = {...m};
-      objt.password = pwdTwo;
+      objt.password = passwordTwo;
       return objt;
     })
   }
@@ -65,7 +84,16 @@ function App() {
 
       <h3 className='main--h3'>Never use an insecure password again.</h3>
 
-      <button className='main--btn' onClick={execfunc}>Generate passwords</button>
+      <div className='checkbox-inputs' onChange={() => {setIncludeNum(prevVal => !prevVal)}}>
+        <input type="checkbox" name="includeNums" id="includeNums" />
+        <label htmlFor="includeNums">Numbers</label>
+      </div>
+      <div className='checkbox-inputs' onChange={() => {setIncludeSpecial(prevVal => !prevVal)}}>
+        <input  type="checkbox" name="includeSpecial" id="includeSpecial" />
+        <label htmlFor="includeSpecial">Special Characters</label>
+      </div>
+
+      <button className='main--btn' onClick={generatePasswords}>Generate passwords</button>
 
       <hr />
 
